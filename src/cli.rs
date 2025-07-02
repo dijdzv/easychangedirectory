@@ -1,4 +1,4 @@
-use clap::{arg, command, Parser};
+use clap::{Parser, arg, command};
 
 use crate::error::PrintError;
 use crate::shell::Shell;

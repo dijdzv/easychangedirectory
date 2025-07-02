@@ -6,8 +6,8 @@ use crate::app::{Item, ItemInfo};
 use super::_item::{ItemPath, ItemSymlink};
 
 pub fn read_items<P: AsRef<Path>>(path: P) -> anyhow::Result<Vec<ItemInfo>> {
-  let mut items = if let Ok(read_dir) = fs::read_dir(&path) {
-    read_dir
+  let mut items = match fs::read_dir(&path) {
+    Ok(read_dir) => read_dir
       .filter_map(|entry| {
         let entry = entry.ok()?;
         let filepath = entry.path();
@@ -24,9 +24,10 @@ pub fn read_items<P: AsRef<Path>>(path: P) -> anyhow::Result<Vec<ItemInfo>> {
         };
         Some(ItemInfo { item: Item::Path(path), index: Some(0) })
       })
-      .collect::<Vec<_>>()
-  } else {
-    return Ok(vec![ItemInfo::default()]);
+      .collect::<Vec<_>>(),
+    _ => {
+      return Ok(vec![ItemInfo::default()]);
+    }
   };
 
   items.sort_by_key(|item| item.get_path());

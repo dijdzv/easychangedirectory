@@ -1,9 +1,9 @@
 use std::process::Command;
 
 use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
-use tui::{backend::Backend, Terminal};
+use tui::{Terminal, backend::Backend};
 
-use crate::{action::Action, Log};
+use crate::{Log, action::Action};
 
 use super::{App, AppMode};
 

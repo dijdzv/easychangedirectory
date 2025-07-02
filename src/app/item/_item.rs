@@ -26,19 +26,11 @@ impl Item {
   }
 
   pub fn is_dir(&self) -> bool {
-    if let Item::Path(path) = self {
-      path.is_dir()
-    } else {
-      false
-    }
+    if let Item::Path(path) = self { path.is_dir() } else { false }
   }
 
   pub fn is_file(&self) -> bool {
-    if let Item::Path(path) = self {
-      path.is_file()
-    } else {
-      false
-    }
+    if let Item::Path(path) = self { path.is_file() } else { false }
   }
 }
 
@@ -129,11 +121,7 @@ impl ItemInfo {
     Some(self.get_path()?.file_name()?.to_string_lossy().into())
   }
   pub fn can_read(&self) -> bool {
-    if let Item::Path(path) = &self.item {
-      path.is_file()
-    } else {
-      false
-    }
+    if let Item::Path(path) = &self.item { path.is_file() } else { false }
   }
   pub fn is_dir(&self) -> bool {
     self.item.is_dir()
@@ -142,18 +130,10 @@ impl ItemInfo {
     self.item.is_file()
   }
   fn is_symlink(&self) -> bool {
-    if let Some(p) = self.get_path() {
-      p.is_symlink()
-    } else {
-      false
-    }
+    if let Some(p) = self.get_path() { p.is_symlink() } else { false }
   }
   pub fn get_path(&self) -> Option<PathBuf> {
-    if let Item::Path(path) = &self.item {
-      Some(path.get_path())
-    } else {
-      None
-    }
+    if let Item::Path(path) = &self.item { Some(path.get_path()) } else { None }
   }
 }
 

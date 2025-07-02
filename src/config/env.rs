@@ -33,14 +33,11 @@ impl Config {
   }
 
   pub fn show_all(&self) {
-    println!("_ED_PWD = {}", self._ed_pwd.map(|u| u.to_string()).unwrap_or_else(|| "".to_string()));
-    println!("_ED_SET_BG = {}", self._ed_set_bg.map(|u| u.to_string()).unwrap_or_else(|| "".to_string()));
-    println!("_ED_SHOW_INDEX = {}", self._ed_show_index.map(|u| u.to_string()).unwrap_or_else(|| "".to_string()));
-    println!(
-      "_ED_VIEW_FILE_CONTENTS = {}",
-      self._ed_view_file_contents.map(|u| u.to_string()).unwrap_or_else(|| "".to_string())
-    );
-    println!("_ED_LOG = {}", self._ed_log.map(|u| u.to_string()).unwrap_or_else(|| "".to_string()));
+    println!("_ED_PWD = {}", self._ed_pwd.map(|u| u.to_string()).unwrap_or_default());
+    println!("_ED_SET_BG = {}", self._ed_set_bg.map(|u| u.to_string()).unwrap_or_default());
+    println!("_ED_SHOW_INDEX = {}", self._ed_show_index.map(|u| u.to_string()).unwrap_or_default());
+    println!("_ED_VIEW_FILE_CONTENTS = {}", self._ed_view_file_contents.map(|u| u.to_string()).unwrap_or_default());
+    println!("_ED_LOG = {}", self._ed_log.map(|u| u.to_string()).unwrap_or_default());
   }
 }
 

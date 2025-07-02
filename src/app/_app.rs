@@ -8,12 +8,12 @@ use anyhow::bail;
 use crossterm::{
   event::{DisableMouseCapture, EnableMouseCapture},
   execute,
-  terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+  terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
-use tui::{backend::CrosstermBackend, Terminal};
+use tui::{Terminal, backend::CrosstermBackend};
 
 use super::{Item, ItemInfo, Search, State, StatefulList};
-use crate::{action::Action, Config};
+use crate::{Config, action::Action};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AppMode {
@@ -38,11 +38,7 @@ const JUMP: usize = 4;
 impl App {
   fn generate_index<P: AsRef<Path>>(items: &[ItemInfo], path: P) -> usize {
     let generate_item = items.iter().enumerate().find(|(_, item)| item.get_path().unwrap() == path.as_ref());
-    if let Some((i, _)) = generate_item {
-      i
-    } else {
-      0
-    }
+    if let Some((i, _)) = generate_item { i } else { 0 }
   }
   fn generate_parent_path<P: AsRef<Path>>(path: P) -> PathBuf {
     path.as_ref().parent().unwrap_or_else(|| Path::new("")).into()
@@ -95,11 +91,7 @@ impl App {
     }
   }
   pub fn judge_mode(&self) -> AppMode {
-    if self.search.text.is_empty() {
-      AppMode::Normal
-    } else {
-      AppMode::Search
-    }
+    if self.search.text.is_empty() { AppMode::Normal } else { AppMode::Search }
   }
   pub fn make_items<P: AsRef<Path>>(path: P) -> anyhow::Result<Vec<ItemInfo>> {
     Ok(if path.as_ref().to_string_lossy().is_empty() { vec![ItemInfo::default()] } else { super::read_items(path)? })
@@ -125,7 +117,7 @@ impl App {
     let (new_child_items, new_i) = if let Some(items) = self.get_child_items().get(selected_ci) {
       (items.generate_child_items()?, self.get_child_index())
     } else {
-      (self.get_child_items().get(0).unwrap_or(&ItemInfo::default()).generate_child_items()?, 0)
+      (self.get_child_items().first().unwrap_or(&ItemInfo::default()).generate_child_items()?, 0)
     };
 
     let new_pi = match self.judge_mode() {
@@ -245,7 +237,7 @@ impl App {
       AppMode::Normal => self.get_current_index(),
       AppMode::Search => self.get_search_index(),
     };
-    let new_i = if old_i < JUMP { 0 } else { old_i - JUMP };
+    let new_i = old_i.saturating_sub(JUMP);
     match self.judge_mode() {
       AppMode::Normal => self.items.select(new_i),
       AppMode::Search => self.search.select(new_i),
@@ -310,7 +302,7 @@ impl App {
     let items = super::read_items(&wd)?;
 
     // Initial selection is 0
-    let child_path = match items.get(0) {
+    let child_path = match items.first() {
       Some(item) => {
         if item.is_dir() {
           item.get_path().unwrap()
@@ -351,11 +343,7 @@ impl App {
       .iter()
       .filter_map(|item| -> Option<ItemInfo> {
         if let Item::Content(s) = &item.item {
-          if s.contains(&self.search.text) {
-            Some(item.clone())
-          } else {
-            None
-          }
+          if s.contains(&self.search.text) { Some(item.clone()) } else { None }
         } else if item.get_path()?.file_name()?.to_string_lossy().to_string().contains(&self.search.text) {
           Some(item.clone())
         } else {
@@ -426,4 +414,39 @@ pub fn app() -> anyhow::Result<Action> {
   terminal.show_cursor()?;
 
   Ok(action)
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use std::path::PathBuf;
+
+  #[test]
+  fn test_app_mode() {
+    assert_eq!(AppMode::Normal, AppMode::Normal);
+    assert_ne!(AppMode::Normal, AppMode::Search);
+  }
+
+  #[test]
+  fn test_make_items_empty_path() {
+    let result = App::make_items("");
+    assert!(result.is_ok());
+    let items = result.unwrap();
+    assert_eq!(items.len(), 1);
+    assert_eq!(items[0].item, Item::new());
+  }
+
+  #[test]
+  fn test_generate_parent_path() {
+    let path = PathBuf::from("/home/user/documents");
+    let parent = App::generate_parent_path(&path);
+    assert_eq!(parent, PathBuf::from("/home/user"));
+  }
+
+  #[test]
+  fn test_generate_parent_path_root() {
+    let path = PathBuf::from("/");
+    let parent = App::generate_parent_path(&path);
+    assert_eq!(parent, PathBuf::from(""));
+  }
 }

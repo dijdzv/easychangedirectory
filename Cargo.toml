@@ -6,7 +6,7 @@ authors = ["dijdzv <dijdzv@gmail.com>"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/dijdzv/easychangedirectory"
-edition = "2021"
+edition = "2024"
 categories = ["command-line-utilities", "filesystem"]
 keywords = ["cli","terminal","cd"]
 

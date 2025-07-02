@@ -1,14 +1,14 @@
 use tui::{
+  Frame,
   backend::Backend,
   layout::{Constraint, Direction, Layout},
   style::{Color, Modifier, Style},
   text::Span,
   widgets::{Block, Borders, List},
   widgets::{ListItem, ListState},
-  Frame,
 };
 
-use super::{item::ItemSymlink, App, AppMode, Item, ItemInfo, ItemPath};
+use super::{App, AppMode, Item, ItemInfo, ItemPath, item::ItemSymlink};
 use crate::Config;
 
 /* Color
