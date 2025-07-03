@@ -1,0 +1,19 @@
+{
+    "permissions": {
+        "allow": [
+            "Bash(ls:*)",
+            "Bash(find:*)",
+            "WebFetch(domain:docs.anthropic.com)"
+        ],
+        "deny": []
+    },
+    "hooks": {
+        "postToolUse": [
+            {
+                "match": "Edit|MultiEdit|Write",
+                "command": "cargo fmt --all"
+            }
+        ]
+    },
+    "includeCoAuthoredBy": false
+}

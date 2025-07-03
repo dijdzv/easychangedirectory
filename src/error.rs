@@ -105,7 +105,6 @@ impl From<UiError> for AppError {
   }
 }
 
-
 pub trait PrintError {
   fn eprintln(&self);
 }

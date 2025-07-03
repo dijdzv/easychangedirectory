@@ -13,8 +13,8 @@ use crossterm::{
 use tui::{Terminal, backend::CrosstermBackend};
 
 use super::{Item, ItemInfo, Search, State, StatefulList};
-use crate::{Config, action::Action};
 use crate::error::{AppError, FileSystemError, UiError};
+use crate::{Config, action::Action};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AppMode {
@@ -38,9 +38,8 @@ pub struct App {
 const JUMP: usize = 4;
 impl App {
   fn generate_index<P: AsRef<Path>>(items: &[ItemInfo], path: P) -> usize {
-    let generate_item = items.iter().enumerate().find(|(_, item)| {
-      item.get_path().map_or(false, |p| p == path.as_ref())
-    });
+    let generate_item =
+      items.iter().enumerate().find(|(_, item)| item.get_path().map_or(false, |p| p == path.as_ref()));
     if let Some((i, _)) = generate_item { i } else { 0 }
   }
   fn generate_parent_path<P: AsRef<Path>>(path: P) -> PathBuf {
@@ -74,23 +73,17 @@ impl App {
     match self.judge_mode() {
       AppMode::Normal => {
         let index = self.items.selected();
-        self.items.items.get(index)
-          .ok_or_else(|| UiError::InvalidSelection(index).into())
-          .map(|item| item.clone())
+        self.items.items.get(index).ok_or_else(|| UiError::InvalidSelection(index).into()).map(|item| item.clone())
       }
       AppMode::Search => {
         let index = self.search.state.selected().unwrap_or(0);
-        self.search.list.get(index)
-          .ok_or_else(|| UiError::InvalidSelection(index).into())
-          .map(|item| item.clone())
+        self.search.list.get(index).ok_or_else(|| UiError::InvalidSelection(index).into()).map(|item| item.clone())
       }
     }
   }
   pub fn get_selected_filepath(&self) -> Result<PathBuf, AppError> {
     let item = self.get_selected_item()?;
-    item.get_path().ok_or_else(|| {
-      FileSystemError::InvalidPath("Selected item has no valid path".to_string()).into()
-    })
+    item.get_path().ok_or_else(|| FileSystemError::InvalidPath("Selected item has no valid path".to_string()).into())
   }
   /// If the working block is "content" `true`
   fn is_contents_in_working_block(&self) -> bool {
@@ -119,9 +112,9 @@ impl App {
 
     let selected_item = self.get_selected_item()?;
     let new_wd = if selected_item.is_dir() {
-      selected_item.get_path().ok_or_else(|| {
-        FileSystemError::InvalidPath("Directory item has no valid path".to_string())
-      })?
+      selected_item
+        .get_path()
+        .ok_or_else(|| FileSystemError::InvalidPath("Directory item has no valid path".to_string()))?
     } else if selected_item.is_file() && self.config.is_view_file_contents() {
       self.move_content(selected_item)?;
       return Ok(());
@@ -167,9 +160,9 @@ impl App {
     };
     let new_grandparent_path = Self::generate_parent_path(&self.wd);
 
-    self.wd = selected_item.get_path().ok_or_else(|| {
-      FileSystemError::InvalidPath("Content item has no valid path".to_string())
-    })?;
+    self.wd = selected_item
+      .get_path()
+      .ok_or_else(|| FileSystemError::InvalidPath("Content item has no valid path".to_string()))?;
     self.grandparent_path = new_grandparent_path;
     self.search = Search::new();
     self.grandparent_items = mem::replace(
@@ -364,9 +357,11 @@ impl App {
       .filter_map(|item| -> Option<ItemInfo> {
         if let Item::Content(s) = &item.item {
           if s.contains(&self.search.text) { Some(item.clone()) } else { None }
-        } else if item.get_path()
+        } else if item
+          .get_path()
           .and_then(|p| p.file_name().map(|n| n.to_string_lossy().to_string()))
-          .map_or(false, |name| name.contains(&self.search.text)) {
+          .map_or(false, |name| name.contains(&self.search.text))
+        {
           Some(item.clone())
         } else {
           None
@@ -387,12 +382,8 @@ impl App {
       AppMode::Search => self.get_search_list(),
     };
 
-    self.child_items = StatefulList::with_items_option(
-      items.get(index)
-        .unwrap_or(&ItemInfo::default())
-        .generate_child_items()?,
-      ci
-    );
+    self.child_items =
+      StatefulList::with_items_option(items.get(index).unwrap_or(&ItemInfo::default()).generate_child_items()?, ci);
     if items[index].is_file() {
       self.child_items.unselect();
     }

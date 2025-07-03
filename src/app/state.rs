@@ -19,7 +19,7 @@ impl StatefulList {
   pub fn selected(&self) -> usize {
     self.state.selected().unwrap_or(0)
   }
-  
+
   pub fn selected_safe(&self) -> Result<usize, AppError> {
     self.state.selected().ok_or_else(|| UiError::NoItemSelected.into())
   }
