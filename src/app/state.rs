@@ -1,4 +1,4 @@
-use tui::widgets::ListState;
+use ratatui::widgets::ListState;
 
 use super::ItemInfo;
 use crate::error::{AppError, UiError};

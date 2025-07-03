@@ -3,6 +3,7 @@
 - language = Japanese
 - character_code = UTF-8
 - コメントやエラーメッセージは英語で書く
+- TODO.mdを適宜更新し、進捗状況を反映させる
 
 ## Project Overview
 
