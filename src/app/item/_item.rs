@@ -3,9 +3,8 @@ use std::{
   path::{Path, PathBuf},
 };
 
-use anyhow::Context;
-
 use super::App;
+use crate::error::FileSystemError;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Item {
@@ -106,9 +105,15 @@ impl ItemInfo {
       }
     }
     Ok(if self.is_dir() {
-      App::make_items(self.get_path().unwrap())?
+      let path = self.get_path().ok_or_else(|| {
+        FileSystemError::InvalidPath("Directory item has no valid path".to_string())
+      })?;
+      App::make_items(path)?
     } else if self.is_file() && self.can_read() {
-      if let Ok(s) = fs::read_to_string(self.get_path().context("Non-string files are being read.")?) {
+      let path = self.get_path().ok_or_else(|| {
+        FileSystemError::InvalidPath("File item has no valid path".to_string())
+      })?;
+      if let Ok(s) = fs::read_to_string(&path) {
         s.lines().enumerate().map(|(i, s)| Self { item: Item::Content(s.to_string()), index: Some(i) }).collect()
       } else {
         vec![Self::default()]

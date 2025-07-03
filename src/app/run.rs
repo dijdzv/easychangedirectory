@@ -9,7 +9,7 @@ use super::{App, AppMode};
 
 pub fn run<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> anyhow::Result<Action> {
   if app.config.is_log() {
-    Log::init();
+    Log::init()?;
   }
   loop {
     terminal.draw(|f| super::ui(f, &mut app))?;
@@ -68,7 +68,7 @@ pub fn run<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> anyhow::Resu
             // }
 
             // print selected filepath
-            KeyCode::Char('p') => return Ok(Action::Print(app.get_selected_filepath())),
+            KeyCode::Char('p') => return Ok(Action::Print(app.get_selected_filepath()?)),
 
             _ => {}
           }
