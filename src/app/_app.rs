@@ -5,12 +5,12 @@ use std::{
 };
 
 use anyhow::bail;
-use crossterm::{
+use ratatui::crossterm::{
   event::{DisableMouseCapture, EnableMouseCapture},
   execute,
   terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
-use tui::{Terminal, backend::CrosstermBackend};
+use ratatui::{Terminal, backend::CrosstermBackend};
 
 use super::{Item, ItemInfo, Search, State, StatefulList};
 use crate::error::{AppError, FileSystemError, UiError};
@@ -38,8 +38,7 @@ pub struct App {
 const JUMP: usize = 4;
 impl App {
   fn generate_index<P: AsRef<Path>>(items: &[ItemInfo], path: P) -> usize {
-    let generate_item =
-      items.iter().enumerate().find(|(_, item)| item.get_path().map_or(false, |p| p == path.as_ref()));
+    let generate_item = items.iter().enumerate().find(|(_, item)| item.get_path().is_some_and(|p| p == path.as_ref()));
     if let Some((i, _)) = generate_item { i } else { 0 }
   }
   fn generate_parent_path<P: AsRef<Path>>(path: P) -> PathBuf {
@@ -73,11 +72,11 @@ impl App {
     match self.judge_mode() {
       AppMode::Normal => {
         let index = self.items.selected();
-        self.items.items.get(index).ok_or_else(|| UiError::InvalidSelection(index).into()).map(|item| item.clone())
+        self.items.items.get(index).ok_or_else(|| UiError::InvalidSelection(index).into()).cloned()
       }
       AppMode::Search => {
         let index = self.search.state.selected().unwrap_or(0);
-        self.search.list.get(index).ok_or_else(|| UiError::InvalidSelection(index).into()).map(|item| item.clone())
+        self.search.list.get(index).ok_or_else(|| UiError::InvalidSelection(index).into()).cloned()
       }
     }
   }
@@ -318,7 +317,7 @@ impl App {
     let child_path = match items.first() {
       Some(item) => {
         if item.is_dir() {
-          item.get_path().unwrap_or_else(|| PathBuf::new())
+          item.get_path().unwrap_or_else(PathBuf::new)
         } else {
           PathBuf::new()
         }
@@ -360,7 +359,7 @@ impl App {
         } else if item
           .get_path()
           .and_then(|p| p.file_name().map(|n| n.to_string_lossy().to_string()))
-          .map_or(false, |name| name.contains(&self.search.text))
+          .is_some_and(|name| name.contains(&self.search.text))
         {
           Some(item.clone())
         } else {

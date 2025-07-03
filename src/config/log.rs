@@ -1,7 +1,7 @@
 use std::{fs::File, path::PathBuf};
 
 use ::log::info;
-use crossterm::event::KeyEvent;
+use ratatui::crossterm::event::KeyEvent;
 use simplelog::{CombinedLogger, Config, LevelFilter, WriteLogger};
 
 use crate::app::App;

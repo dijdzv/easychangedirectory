@@ -1,7 +1,7 @@
 use std::process::Command;
 
-use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
-use tui::{Terminal, backend::Backend};
+use ratatui::crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
+use ratatui::{Terminal, backend::Backend};
 
 use crate::{Log, action::Action};
 

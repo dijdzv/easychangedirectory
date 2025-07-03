@@ -1,6 +1,5 @@
-use tui::{
+use ratatui::{
   Frame,
-  backend::Backend,
   layout::{Constraint, Direction, Layout},
   style::{Color, Modifier, Style},
   text::Span,
@@ -34,17 +33,17 @@ impl MyStyle {
   }
 }
 
-pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
+pub fn ui(f: &mut Frame, app: &mut App) {
   // Overall style
   if app.config.is_set_bg() {
-    f.render_widget(Block::default().style(Style::default().bg(Color::Rgb(10, 10, 10))), f.size());
+    f.render_widget(Block::default().style(Style::default().bg(Color::Rgb(10, 10, 10))), f.area());
   }
 
   // layout
   let chunks = Layout::default()
     .direction(Direction::Vertical)
     .constraints([Constraint::Percentage(10), Constraint::Max(100)])
-    .split(f.size());
+    .split(f.area());
 
   // top----------------------------------------------------------
   let top_chunks = Layout::default()
