@@ -1,6 +1,7 @@
 use tui::widgets::ListState;
 
 use super::ItemInfo;
+use crate::error::{AppError, UiError};
 
 pub trait State {
   fn next(&mut self) -> usize;
@@ -16,7 +17,11 @@ pub struct StatefulList {
 
 impl StatefulList {
   pub fn selected(&self) -> usize {
-    self.state.selected().unwrap()
+    self.state.selected().unwrap_or(0)
+  }
+
+  pub fn selected_safe(&self) -> Result<usize, AppError> {
+    self.state.selected().ok_or_else(|| UiError::NoItemSelected.into())
   }
   pub fn unselect(&mut self) {
     self.state.select(None);

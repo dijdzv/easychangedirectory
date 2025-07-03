@@ -21,7 +21,7 @@ mod tests {
     let result = pipe_shell(&test_path, temp_path);
     assert!(result.is_ok());
 
-    let content = fs::read_to_string(temp_path).unwrap();
+    let content = fs::read_to_string(temp_path).expect("Failed to read temp file in test");
     assert_eq!(content, "/tmp");
 
     // クリーンアップ
