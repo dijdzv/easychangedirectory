@@ -65,7 +65,7 @@ mod tests {
   
   #[test]
   fn test_init_creates_directory() {
-    // このテストは実際のディレクトリを作成するため、テスト環境でのみ実行
-    // 実際の実装では、テスト時は一時ディレクトリを使用することを推奨
+    // This test creates actual directories, should only run in test environment
+    // In actual implementation, it's recommended to use temporary directories during testing
   }
 }

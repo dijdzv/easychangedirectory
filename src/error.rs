@@ -35,11 +35,11 @@ pub enum UiError {
 impl fmt::Display for AppError {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      AppError::Config(e) => write!(f, "設定エラー: {}", e),
-      AppError::FileSystem(e) => write!(f, "ファイルシステムエラー: {}", e),
-      AppError::Ui(e) => write!(f, "UI エラー: {}", e),
-      AppError::Io(e) => write!(f, "I/O エラー: {}", e),
-      AppError::Other(msg) => write!(f, "エラー: {}", msg),
+      AppError::Config(e) => write!(f, "Configuration error: {}", e),
+      AppError::FileSystem(e) => write!(f, "File system error: {}", e),
+      AppError::Ui(e) => write!(f, "UI error: {}", e),
+      AppError::Io(e) => write!(f, "I/O error: {}", e),
+      AppError::Other(msg) => write!(f, "Error: {}", msg),
     }
   }
 }
@@ -47,10 +47,10 @@ impl fmt::Display for AppError {
 impl fmt::Display for ConfigError {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      ConfigError::HomeDirectoryNotFound => write!(f, "ホームディレクトリが見つかりません"),
-      ConfigError::LogDirectoryCreationFailed(e) => write!(f, "ログディレクトリの作成に失敗しました: {}", e),
-      ConfigError::LogFileCreationFailed(e) => write!(f, "ログファイルの作成に失敗しました: {}", e),
-      ConfigError::LogInitializationFailed(msg) => write!(f, "ログの初期化に失敗しました: {}", msg),
+      ConfigError::HomeDirectoryNotFound => write!(f, "Home directory not found"),
+      ConfigError::LogDirectoryCreationFailed(e) => write!(f, "Failed to create log directory: {}", e),
+      ConfigError::LogFileCreationFailed(e) => write!(f, "Failed to create log file: {}", e),
+      ConfigError::LogInitializationFailed(msg) => write!(f, "Failed to initialize logging: {}", msg),
     }
   }
 }
@@ -58,10 +58,10 @@ impl fmt::Display for ConfigError {
 impl fmt::Display for FileSystemError {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      FileSystemError::PathNotFound(path) => write!(f, "パス '{}' が見つかりません", path),
-      FileSystemError::PermissionDenied(path) => write!(f, "パス '{}' へのアクセス権限がありません", path),
-      FileSystemError::InvalidPath(path) => write!(f, "無効なパス: '{}'", path),
-      FileSystemError::DirectoryReadFailed(e) => write!(f, "ディレクトリの読み取りに失敗しました: {}", e),
+      FileSystemError::PathNotFound(path) => write!(f, "Path '{}' not found", path),
+      FileSystemError::PermissionDenied(path) => write!(f, "Permission denied for path '{}'", path),
+      FileSystemError::InvalidPath(path) => write!(f, "Invalid path: '{}'", path),
+      FileSystemError::DirectoryReadFailed(e) => write!(f, "Failed to read directory: {}", e),
     }
   }
 }
@@ -69,9 +69,9 @@ impl fmt::Display for FileSystemError {
 impl fmt::Display for UiError {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      UiError::NoItemSelected => write!(f, "アイテムが選択されていません"),
-      UiError::InvalidSelection(index) => write!(f, "無効な選択: インデックス {}", index),
-      UiError::EmptyItemList => write!(f, "アイテムリストが空です"),
+      UiError::NoItemSelected => write!(f, "No item selected"),
+      UiError::InvalidSelection(index) => write!(f, "Invalid selection: index {}", index),
+      UiError::EmptyItemList => write!(f, "Item list is empty"),
     }
   }
 }
@@ -136,13 +136,13 @@ mod tests {
   #[test]
   fn test_app_error_display() {
     let config_error = AppError::Config(ConfigError::HomeDirectoryNotFound);
-    assert_eq!(config_error.to_string(), "設定エラー: ホームディレクトリが見つかりません");
+    assert_eq!(config_error.to_string(), "Configuration error: Home directory not found");
 
     let fs_error = AppError::FileSystem(FileSystemError::PathNotFound("/test".to_string()));
-    assert_eq!(fs_error.to_string(), "ファイルシステムエラー: パス '/test' が見つかりません");
+    assert_eq!(fs_error.to_string(), "File system error: Path '/test' not found");
 
     let ui_error = AppError::Ui(UiError::NoItemSelected);
-    assert_eq!(ui_error.to_string(), "UI エラー: アイテムが選択されていません");
+    assert_eq!(ui_error.to_string(), "UI error: No item selected");
   }
 
   #[test]
@@ -168,6 +168,6 @@ mod tests {
   fn test_app_error_to_anyhow() {
     let app_error = AppError::Other("test error".to_string());
     let anyhow_error = anyhow::Error::new(app_error);
-    assert_eq!(anyhow_error.to_string(), "エラー: test error");
+    assert_eq!(anyhow_error.to_string(), "Error: test error");
   }
 }
