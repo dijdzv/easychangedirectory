@@ -35,11 +35,11 @@ pub enum UiError {
 impl fmt::Display for AppError {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      AppError::Config(e) => write!(f, "Configuration error: {}", e),
-      AppError::FileSystem(e) => write!(f, "File system error: {}", e),
-      AppError::Ui(e) => write!(f, "UI error: {}", e),
-      AppError::Io(e) => write!(f, "I/O error: {}", e),
-      AppError::Other(msg) => write!(f, "Error: {}", msg),
+      AppError::Config(e) => write!(f, "Configuration error: {e}"),
+      AppError::FileSystem(e) => write!(f, "File system error: {e}"),
+      AppError::Ui(e) => write!(f, "UI error: {e}"),
+      AppError::Io(e) => write!(f, "I/O error: {e}"),
+      AppError::Other(msg) => write!(f, "Error: {msg}"),
     }
   }
 }
@@ -48,9 +48,9 @@ impl fmt::Display for ConfigError {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
       ConfigError::HomeDirectoryNotFound => write!(f, "Home directory not found"),
-      ConfigError::LogDirectoryCreationFailed(e) => write!(f, "Failed to create log directory: {}", e),
-      ConfigError::LogFileCreationFailed(e) => write!(f, "Failed to create log file: {}", e),
-      ConfigError::LogInitializationFailed(msg) => write!(f, "Failed to initialize logging: {}", msg),
+      ConfigError::LogDirectoryCreationFailed(e) => write!(f, "Failed to create log directory: {e}"),
+      ConfigError::LogFileCreationFailed(e) => write!(f, "Failed to create log file: {e}"),
+      ConfigError::LogInitializationFailed(msg) => write!(f, "Failed to initialize logging: {msg}"),
     }
   }
 }
@@ -58,10 +58,10 @@ impl fmt::Display for ConfigError {
 impl fmt::Display for FileSystemError {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      FileSystemError::PathNotFound(path) => write!(f, "Path '{}' not found", path),
-      FileSystemError::PermissionDenied(path) => write!(f, "Permission denied for path '{}'", path),
-      FileSystemError::InvalidPath(path) => write!(f, "Invalid path: '{}'", path),
-      FileSystemError::DirectoryReadFailed(e) => write!(f, "Failed to read directory: {}", e),
+      FileSystemError::PathNotFound(path) => write!(f, "Path '{path}' not found"),
+      FileSystemError::PermissionDenied(path) => write!(f, "Permission denied for path '{path}'"),
+      FileSystemError::InvalidPath(path) => write!(f, "Invalid path: '{path}'"),
+      FileSystemError::DirectoryReadFailed(e) => write!(f, "Failed to read directory: {e}"),
     }
   }
 }
@@ -70,7 +70,7 @@ impl fmt::Display for UiError {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
       UiError::NoItemSelected => write!(f, "No item selected"),
-      UiError::InvalidSelection(index) => write!(f, "Invalid selection: index {}", index),
+      UiError::InvalidSelection(index) => write!(f, "Invalid selection: index {index}"),
       UiError::EmptyItemList => write!(f, "Item list is empty"),
     }
   }
